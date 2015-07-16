@@ -1,0 +1,21 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ultimatumedia.moneymanager.Fragments.TransactionsFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="473dp"
+        android:id="@+id/transactions_listview_transactsions"
+        android:layout_gravity="left|top" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Transaction"
+        android:id="@+id/transactions_button_new_transaction"
+        android:layout_gravity="center_horizontal|bottom" />
+
+</FrameLayout>
