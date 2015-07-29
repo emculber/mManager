@@ -9,6 +9,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.ultimatumedia.moneymanager.R;
@@ -20,20 +21,27 @@ import java.util.UUID;
  * TODO: document your custom view class.
  */
 public class CircleEqualityProgress extends View {
-    //Delete--------------------------------------------------------
-    private String mExampleString; // TODO: use a default from R.string...
-    private int mExampleColor = Color.RED; // TODO: use a default from R.color...
-    private float mExampleDimension = 0; // TODO: use a default from R.dimen...
-    private Drawable mExampleDrawable;
 
-    private TextPaint mTextPaint;
-    private float mTextWidth;
-    private float mTextHeight;
-    //Delete--------------------------------------------------------
+    private String text = "Default Text";
+    private float textSize = 50;
+    private float textWidth = 50;
+    private float textHeight = 50;
+    private int innerCircleColor = 0x0000000;
+    private int clockwiseColor = 0x0000000;
+    private int counterClockwiseColor = 0x0000000;
+    private float padding = 100;
+    private float circleThickness = 50;
+    private int angleStart = 270;
+    private float angleStop = 100;
 
-    private float outerPadding = 100;
+    private Paint innerCirclePaint;
+    private Paint clockwisePaint;
+    private Paint counterClockwisePaint;
+    private TextPaint textPaint;
+
+    /*private float outerPadding = 100;
     private float radius = 100;
-    private float innerPadding = 50;
+    private float innerPadding = 50;*/
 
     public CircleEqualityProgress(Context context) {
         super(context);
@@ -54,226 +62,106 @@ public class CircleEqualityProgress extends View {
         // Load attributes
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.CircleEqualityProgress, defStyle, 0);
+        /*centerText format="string"
+          colorCounterClockwise format="color"
+          colorClockwise format="color"
+          padding" format="dimension"*/
 
-        mExampleString = a.getString(
-                R.styleable.CircleEqualityProgress_exampleString);
-        mExampleColor = a.getColor(
-                R.styleable.CircleEqualityProgress_exampleColor,
-                mExampleColor);
-        // Use getDimensionPixelSize or getDimensionPixelOffset when dealing with
-        // values that should fall on pixel boundaries.
-        mExampleDimension = a.getDimension(
-                R.styleable.CircleEqualityProgress_exampleDimension,
-                mExampleDimension);
-
-        if (a.hasValue(R.styleable.CircleEqualityProgress_exampleDrawable)) {
-            mExampleDrawable = a.getDrawable(
-                    R.styleable.CircleEqualityProgress_exampleDrawable);
-            mExampleDrawable.setCallback(this);
-        }
+        text = a.getString(R.styleable.CircleEqualityProgress_centerText);
+        textSize = a.getDimension(R.styleable.CircleEqualityProgress_centerTextSize, textSize);
+        innerCircleColor = a.getColor(R.styleable.CircleEqualityProgress_innerCircleColor, innerCircleColor);
+        clockwiseColor = a.getColor(R.styleable.CircleEqualityProgress_colorClockwise, clockwiseColor);
+        counterClockwiseColor = a.getColor(R.styleable.CircleEqualityProgress_colorCounterClockwise, counterClockwiseColor);;
+        padding = a.getDimension(R.styleable.CircleEqualityProgress_padding, padding);
+        circleThickness = a.getDimension(R.styleable.CircleEqualityProgress_circleThickness, circleThickness);
 
         a.recycle();
 
-        // Set up a default TextPaint object
-        mTextPaint = new TextPaint();
-        mTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setTextAlign(Paint.Align.LEFT);
+
+        innerCirclePaint = new Paint();
+        innerCirclePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        innerCirclePaint.setColor(innerCircleColor);
+        innerCirclePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+
+        clockwisePaint = new Paint();
+        clockwisePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        clockwisePaint.setColor(clockwiseColor);
+        clockwisePaint.setStyle(Paint.Style.STROKE);
+        clockwisePaint.setStrokeWidth(circleThickness);
+
+        counterClockwisePaint = new Paint();
+        counterClockwisePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        counterClockwisePaint.setColor(counterClockwiseColor);
+        counterClockwisePaint.setStyle(Paint.Style.STROKE);
+        counterClockwisePaint.setStrokeWidth(circleThickness);
+
+        textPaint = new TextPaint();
+        textPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        textPaint.setTextAlign(Paint.Align.LEFT);
 
         // Update TextPaint and text measurements from attributes
         invalidateTextPaintAndMeasurements();
     }
 
     private void invalidateTextPaintAndMeasurements() {
-        mTextPaint.setTextSize(mExampleDimension);
-        mTextPaint.setColor(mExampleColor);
-        mTextWidth = mTextPaint.measureText(mExampleString);
+        textPaint.setTextSize(textSize);
+        textPaint.setColor(Color.BLACK);
+        textWidth = textPaint.measureText(text);
 
-        Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
-        mTextHeight = fontMetrics.bottom;
+        Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
+        textHeight = fontMetrics.bottom;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // TODO: consider storing these as member variables to reduce
-        // allocations per draw cycle.
-        int paddingLeft = getPaddingLeft();
-        int paddingTop = getPaddingTop();
-        int paddingRight = getPaddingRight();
-        int paddingBottom = getPaddingBottom();
-
-        int contentWidth = getWidth() - paddingLeft - paddingRight;
-        int contentHeight = getHeight() - paddingTop - paddingBottom;
-
-        // Draw the text.
-        canvas.drawText(mExampleString,
-                paddingLeft + (contentWidth - mTextWidth) / 2,
-                paddingTop + (contentHeight + mTextHeight) / 2,
-                mTextPaint);
-
-        // Draw the example drawable on top of the text.
-        if (mExampleDrawable != null) {
-            mExampleDrawable.setBounds(paddingLeft, paddingTop,
-                    paddingLeft + contentWidth, paddingTop + contentHeight);
-            mExampleDrawable.draw(canvas);
-        }
-
-        Paint mTextPaint2 = new TextPaint();
-        mTextPaint2.setFlags(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint2.setARGB(255, 21, 125, 200);
-
-        canvas.drawCircle(getWidth()/2, getHeight()/2,radius + innerPadding, mTextPaint2);
-        canvas.drawCircle(getWidth()/2, getHeight()/2,radius, mTextPaint);
-
-        final TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(new int[]{android.R.attr.actionBarSize});
-        int actionBarSize = (int) styledAttributes.getDimension(0, 0);
-        styledAttributes.recycle();
-
-        int margLeft = 100;
-        int margRight = 100;
-        int margTop = 100;
-        int margBottom = 100;
-        int strokeWidth = 25;
-
-        //int screenHeight = canvas.getHeight();
-        //int screenWidth = canvas.getWidth();
-
-        //int radius = (((screenWidth - margLeft) - margRight) / 2);
-        //int centerX = margLeft + tradius;
-        //int centerY = (((screenHeight - margBottom) - tradius) - (strokeWidth / 2)) - actionBarSize;
-
-        int frameHeight = getHeight();;
-        int frameWidth = getWidth();;
-
-        int radius = (((frameWidth - margLeft) - margRight) / 2);
         int centerX = getWidth()/2;
         int centerY = getHeight()/2;
+        float radius;
 
-        int rectLeft = centerX - radius;
-        int rectRight = centerX + radius;
-        int rectTop = centerY - radius;
-        int rectBottom = centerY + radius;
+        if(centerX > centerY) {
+            radius = centerY - (padding*2);
+        }else {
+            radius = centerX - (padding*2);
+        }
 
-        Paint progressBar = new Paint();
-        RectF rectF = new RectF(rectLeft, rectTop, rectRight, rectBottom);
-        progressBar.setColor(Color.GREEN);
-        progressBar.setStyle(Paint.Style.STROKE);
-        progressBar.setStrokeWidth(strokeWidth);
-        progressBar.setFlags(progressBar.ANTI_ALIAS_FLAG);
+        float rectLeft = centerX - radius;
+        float rectRight = centerX + radius;
+        float rectTop = centerY - radius;
+        float rectBottom = centerY + radius;
 
-        Paint progressBar2 = new Paint();
-        RectF rectF2 = new RectF(rectLeft, rectTop, rectRight, rectBottom);
-        progressBar2.setColor(Color.BLUE);
-        progressBar2.setStyle(Paint.Style.STROKE);
-        progressBar2.setStrokeWidth(strokeWidth);
-        progressBar2.setFlags(progressBar.ANTI_ALIAS_FLAG);
 
-        Paint Background = new Paint();
-        Background.setColor(Color.GRAY);
-        Background.setStyle(Paint.Style.FILL_AND_STROKE);
-        Background.setStrokeWidth(strokeWidth);
-        // Background.setShader(new LinearGradient(0, 0, 0, getHeight(), Color.BLACK, Color.WHITE, Shader.TileMode.MIRROR));
-        Background.setFlags(Background.ANTI_ALIAS_FLAG);
+        RectF boundRect = new RectF(rectLeft, rectTop, rectRight, rectBottom);
 
-        canvas.drawCircle(centerX, centerY, radius, Background);
-        canvas.drawArc(rectF, 270, progress, true, progressBar);
-        canvas.drawArc(rectF2, 270, -180, true, progressBar2);
-        canvas.drawCircle(centerX, centerY, radius - (strokeWidth), Background);
-        runingMethod();
+        canvas.drawCircle(centerX, centerY, radius, innerCirclePaint);
+        canvas.drawArc(boundRect, angleStart, angleStop + progress, true, clockwisePaint);
+        canvas.drawArc(boundRect, angleStart, angleStop + progress-360, true, counterClockwisePaint);
+        canvas.drawCircle(centerX, centerY, radius - (circleThickness - (circleThickness/2)), innerCirclePaint);
+        canvas.drawText(text, centerX - (textWidth/2), centerY+(textHeight/2), textPaint);
+        //canvas.drawArc(boundRect, 270, 150-360, true, counterClockwisePaint);
+        //canvas.drawArc(boundRect, 270, 150, true, clockwisePaint);
     }
 
-    /**
-     * Gets the example string attribute value.
-     *
-     * @return The example string attribute value.
-     */
-    public String getExampleString() {
-        return mExampleString;
-    }
-
-    /**
-     * Sets the view's example string attribute value. In the example view, this string
-     * is the text to draw.
-     *
-     * @param exampleString The example string attribute value to use.
-     */
-    public void setExampleString(String exampleString) {
-        mExampleString = exampleString;
+    public void updateView(String text, float newAngle) {
+        angleStop = newAngle;
+        this.text = text;
         invalidateTextPaintAndMeasurements();
-    }
-
-    /**
-     * Gets the example color attribute value.
-     *
-     * @return The example color attribute value.
-     */
-    public int getExampleColor() {
-        return mExampleColor;
-    }
-
-    /**
-     * Sets the view's example color attribute value. In the example view, this color
-     * is the font color.
-     *
-     * @param exampleColor The example color attribute value to use.
-     */
-    public void setExampleColor(int exampleColor) {
-        mExampleColor = exampleColor;
-        invalidateTextPaintAndMeasurements();
-    }
-
-    /**
-     * Gets the example dimension attribute value.
-     *
-     * @return The example dimension attribute value.
-     */
-    public float getExampleDimension() {
-        return mExampleDimension;
-    }
-
-    /**
-     * Sets the view's example dimension attribute value. In the example view, this dimension
-     * is the font size.
-     *
-     * @param exampleDimension The example dimension attribute value to use.
-     */
-    public void setExampleDimension(float exampleDimension) {
-        mExampleDimension = exampleDimension;
-        invalidateTextPaintAndMeasurements();
-    }
-
-    /**
-     * Gets the example drawable attribute value.
-     *
-     * @return The example drawable attribute value.
-     */
-    public Drawable getExampleDrawable() {
-        return mExampleDrawable;
-    }
-
-    /**
-     * Sets the view's example drawable attribute value. In the example view, this drawable is
-     * drawn above the text.
-     *
-     * @param exampleDrawable The example drawable attribute value to use.
-     */
-    public void setExampleDrawable(Drawable exampleDrawable) {
-        mExampleDrawable = exampleDrawable;
+        invalidate();
     }
 
     float progress = 0;
-    float spinSpeed = 10;
+    float spinSpeed = 1;
     boolean running = false;
     Thread s;
-    private void runingMethod() {
+    public void runningMethod() {
         final Runnable r = new Runnable() {
             public void run() {
                 running = true;
                 long lastSec = 0;
                 long lastMin = 0;
                 while (progress < 361) {
-                    long sec = System.currentTimeMillis() / 1000;
+                    long sec = System.currentTimeMillis() / 100;
                     if (sec != lastSec) {
                         progress += spinSpeed;
                         lastSec = sec;

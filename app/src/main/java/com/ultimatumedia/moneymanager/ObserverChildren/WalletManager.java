@@ -43,7 +43,7 @@ public class WalletManager extends Subject {
         observersSet = true;
 
         ClientReader clientReader = new ClientReader();
-        if(databaseLayer.getWallets().size() >= 1) {
+        if(databaseLayer.getWallets().size() <= 1) {
             clientReader.LoadAllWalletsFromCSV(context, databaseLayer);
         }
         if(databaseLayer.getTransactionList().size() == 0) {

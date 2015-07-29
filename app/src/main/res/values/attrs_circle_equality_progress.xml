@@ -1,9 +1,11 @@
 <resources>
     <declare-styleable name="CircleEqualityProgress">
-        <attr name="exampleString" format="string" />
-        <attr name="exampleDimension" format="dimension" />
-        <attr name="exampleColor" format="color" />
-        <attr name="exampleDrawable" format="color|reference" />
+        <attr name="centerText" format="string" />
+        <attr name="centerTextSize" format="dimension" />
+        <attr name="colorCounterClockwise" format="color" />
+        <attr name="colorClockwise" format="color" />
+        <attr name="innerCircleColor" format="color" />
         <attr name="padding" format="dimension" />
+        <attr name="circleThickness" format="dimension" />
     </declare-styleable>
 </resources>

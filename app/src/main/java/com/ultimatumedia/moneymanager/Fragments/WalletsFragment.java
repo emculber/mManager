@@ -15,6 +15,7 @@ import com.ultimatumedia.moneymanager.Adapters.WalletsBaseAdapter;
 import com.ultimatumedia.moneymanager.DatabaseLayer.DatabaseLayer;
 import com.ultimatumedia.moneymanager.MoneyMath.MoneyMath;
 import com.ultimatumedia.moneymanager.R;
+import com.ultimatumedia.moneymanager.UIComponents.CircleEqualityProgress;
 
 public class WalletsFragment extends Fragment {
 
@@ -30,6 +31,9 @@ public class WalletsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallets, container, false);
 
+        CircleEqualityProgress circleEqualityProgress = (CircleEqualityProgress)view.findViewById(R.id.equality_progress);
+        //circleEqualityProgress.runingMethod();
+
         DatabaseLayer databaseLayer = new DatabaseLayer(view.getContext());
 
 
@@ -41,6 +45,9 @@ public class WalletsFragment extends Fragment {
         double expense = databaseLayer.getTotalTransactionExpense();
         MoneyMath moneyMath = new MoneyMath();
         double total = moneyMath.addMoney(income, expense);
+
+        float incomeAngle = (float)((income/moneyMath.subtractMoney(income, expense))*360.0);
+        circleEqualityProgress.updateView(Double.toString(total), incomeAngle);
 
         expenseTextView.setText(Double.toString(expense));
         incomeTextView.setText(Double.toString(income));
