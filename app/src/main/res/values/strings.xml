@@ -6,4 +6,9 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="transaction_edit_wallet_types">
+        <item>Normal Wallet</item>
+        <item>Debt Wallet</item>
+    </string-array>
 </resources>

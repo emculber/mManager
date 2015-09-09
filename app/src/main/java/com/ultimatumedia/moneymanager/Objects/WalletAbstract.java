@@ -1,11 +1,12 @@
 package com.ultimatumedia.moneymanager.Objects;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.ultimatumedia.moneymanager.DatabaseLayer.DatabaseLayer;
 import com.ultimatumedia.moneymanager.MoneyMath.MoneyMath;
-import com.ultimatumedia.moneymanager.ObserverChildren.WalletManager;
+import com.ultimatumedia.moneymanager.Subjects.WalletManagerSubject;
 import com.ultimatumedia.moneymanager.ObserverPattern.Abstracts.Observer;
 import com.ultimatumedia.moneymanager.ObserverPattern.Abstracts.Subject;
 
@@ -23,6 +24,8 @@ public abstract class WalletAbstract extends Observer {
     protected boolean subscribe = false;
     protected String type = "Normal";
     protected boolean requestMorePercentIfNegitive = false;
+    protected double perferedPercent = 0.0;
+    protected int lineNumber = 0;
     protected Context context;
 
     public WalletAbstract(Context context, Subject subject) {
@@ -40,7 +43,14 @@ public abstract class WalletAbstract extends Observer {
         setType(type);
     }
 
-    public void update() {
+    public void update(String state) {
+        if(state.equalsIgnoreCase("PERCENT_UPDATE")) {
+
+        }
+        else if(state.equalsIgnoreCase("NEW_TRANSACTION")) {
+
+        }
+        DatabaseLayer.updateWallet(context, this);
     }
 
     public long getId() {
@@ -65,7 +75,7 @@ public abstract class WalletAbstract extends Observer {
 
     public void setPercent(double percent, boolean askForPercent) {
         if(askForPercent) {
-            this.percent = ((WalletManager) subject).RequestPercent(context, percent);
+            this.percent = ((WalletManagerSubject) subject).RequestPercent(context, percent, false);
             if (this.percent != percent)
                 Toast.makeText(context, "There is " + this.percent + "% left, so that's how much was given", Toast.LENGTH_SHORT).show();
             else
@@ -80,8 +90,7 @@ public abstract class WalletAbstract extends Observer {
     }
 
     public void addExpense(double expense) {
-        MoneyMath moneyMath = new MoneyMath();
-        this.expense = moneyMath.addMoney(this.expense, expense);
+        this.expense = MoneyMath.addMoney(this.expense, expense);
         addAmount(expense);
     }
 
@@ -90,8 +99,7 @@ public abstract class WalletAbstract extends Observer {
     }
 
     public void addIncome(double income) {
-        MoneyMath moneyMath = new MoneyMath();
-        this.income = moneyMath.addMoney(this.income, income);
+        this.income = MoneyMath.addMoney(this.income, income);
         addAmount(income);
     }
 
@@ -100,8 +108,7 @@ public abstract class WalletAbstract extends Observer {
     }
 
     public void addAmount(double amount) {
-        MoneyMath moneyMath = new MoneyMath();
-        this.amount = moneyMath.addMoney(this.amount, amount);
+        this.amount = MoneyMath.addMoney(this.amount, amount);
     }
 
     public boolean isSubscribe() {
@@ -113,7 +120,7 @@ public abstract class WalletAbstract extends Observer {
             subject.Subscribe(this);
         } else {
             if (this.subscribe) {
-                ((WalletManager) subject).ReturnPercent(getPercent());
+                ((WalletManagerSubject) subject).ReturnPercent(getPercent());
                 setPercent(0, false);
             }
             subject.Unsubscribe(this);
@@ -127,5 +134,29 @@ public abstract class WalletAbstract extends Observer {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isRequestMorePercentIfNegitive() {
+        return requestMorePercentIfNegitive;
+    }
+
+    public void setRequestMorePercentIfNegitive(boolean requestMorePercentIfNegitive) {
+        this.requestMorePercentIfNegitive = requestMorePercentIfNegitive;
+    }
+
+    public double getPerferedPercent() {
+        return perferedPercent;
+    }
+
+    public void setPerferedPercent(double preferedPercent) {
+        this.perferedPercent = preferedPercent;
+    }
+
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
     }
 }

@@ -12,19 +12,11 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Large Text"
-            android:id="@+id/wallets_textview_current_amount"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
             android:id="@+id/wallets_textview_expense"
-            android:layout_below="@+id/wallets_textview_current_amount"
-            android:layout_alignRight="@+id/wallets_button_wallet"
-            android:layout_alignEnd="@+id/wallets_button_wallet" />
+            android:layout_alignTop="@+id/wallet_equality_progress"
+            android:layout_alignRight="@+id/wallets_gridview_wallets"
+            android:layout_alignEnd="@+id/wallets_gridview_wallets"
+            android:layout_marginTop="36dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -32,7 +24,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Large Text"
             android:id="@+id/wallets_textview_income"
-            android:layout_below="@+id/wallets_textview_current_amount"
+            android:layout_alignTop="@+id/wallets_textview_expense"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
@@ -44,7 +36,7 @@
             android:layout_alignParentStart="true"
             android:layout_above="@+id/wallets_button_transaction"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_below="@+id/equality_progress" />
+            android:layout_below="@+id/wallet_equality_progress" />
 
         <Button
             android:layout_width="wrap_content"
@@ -70,12 +62,12 @@
         android:layout_height="100dp"
         android:paddingLeft="20dp"
         android:paddingBottom="40dp"
-        android:id="@+id/equality_progress"
-        app:centerText="$100,000"
+        android:id="@+id/wallet_equality_progress"
+        app:centerText="$100,000.00"
         app:centerTextSize="20dp"
         app:colorClockwise="@color/darkgreen"
         app:colorCounterClockwise="@color/darkred"
-        app:padding="1dp"
+        app:padding="3dp"
         app:circleThickness="2dp"
         app:innerCircleColor="@color/material_blue_grey_800"
         android:layout_alignParentTop="true"

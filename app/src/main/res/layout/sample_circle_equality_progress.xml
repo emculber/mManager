@@ -4,9 +4,9 @@
 
     <com.ultimatumedia.moneymanager.UIComponents.CircleEqualityProgress
         android:background="#ccc"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:id="@+id/equality_progress"
+        android:id="@+id/wallet_equality_progress"
         app:centerText="$100,000"
         app:centerTextSize="25dp"
         app:colorClockwise="@color/darkgreen"

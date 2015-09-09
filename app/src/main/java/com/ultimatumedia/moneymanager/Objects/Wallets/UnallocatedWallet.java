@@ -1,12 +1,6 @@
 package com.ultimatumedia.moneymanager.Objects.Wallets;
 
-import android.content.Context;
-import android.widget.Toast;
-
-import com.ultimatumedia.moneymanager.MoneyMath.MoneyMath;
 import com.ultimatumedia.moneymanager.Objects.WalletAbstract;
-import com.ultimatumedia.moneymanager.ObserverChildren.WalletManager;
-import com.ultimatumedia.moneymanager.ObserverPattern.Abstracts.Subject;
 
 /**
  * Created by Erik on 7/8/15.

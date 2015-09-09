@@ -100,16 +100,31 @@ public class CircleEqualityProgress extends View {
         textPaint.setTextAlign(Paint.Align.LEFT);
 
         // Update TextPaint and text measurements from attributes
-        invalidateTextPaintAndMeasurements();
+        invalidateTextPaintAndMeasurements(0, 0);
     }
 
-    private void invalidateTextPaintAndMeasurements() {
+    private void invalidateTextPaintAndMeasurements(double current, double max) {
         textPaint.setTextSize(textSize);
-        textPaint.setColor(Color.BLACK);
+
+        textPaint.setColor(calculateGradColor(current, max));
         textWidth = textPaint.measureText(text);
 
         Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
         textHeight = fontMetrics.bottom;
+    }
+
+    private int calculateGradColor(double current, double max) {
+        if(max == 0)
+            return Color.BLACK;
+
+        int color1 = Color.RED;
+        int color2 = Color.GREEN;
+
+        float ratio = (float) current / (float) max;
+        int red = (int) (Color.red(color2) * ratio + Color.red(color1) * (1 - ratio));
+        int green = (int) (Color.green(color2) * ratio + Color.green(color1) * (1 - ratio));
+        int blue = (int) (Color.blue(color2) * ratio + Color.blue(color1) * (1 - ratio));
+        return Color.rgb(red, green, blue);
     }
 
     @Override
@@ -139,14 +154,15 @@ public class CircleEqualityProgress extends View {
         canvas.drawArc(boundRect, angleStart, angleStop + progress-360, true, counterClockwisePaint);
         canvas.drawCircle(centerX, centerY, radius - (circleThickness - (circleThickness/2)), innerCirclePaint);
         canvas.drawText(text, centerX - (textWidth/2), centerY+(textHeight/2), textPaint);
+
         //canvas.drawArc(boundRect, 270, 150-360, true, counterClockwisePaint);
         //canvas.drawArc(boundRect, 270, 150, true, clockwisePaint);
     }
 
-    public void updateView(String text, float newAngle) {
+    public void updateView(String text, float newAngle, double current, double max) {
         angleStop = newAngle;
         this.text = text;
-        invalidateTextPaintAndMeasurements();
+        invalidateTextPaintAndMeasurements(current, max);
         invalidate();
     }
 

@@ -14,35 +14,30 @@ import android.widget.ListView;
 import com.ultimatumedia.moneymanager.Adapters.TransactionsBaseAdapter;
 import com.ultimatumedia.moneymanager.R;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.rest.Accept;
+
+@EFragment(R.layout.fragment_transactions)
 public class TransactionsFragment extends Fragment {
 
-    public TransactionsFragment() {
-        // Required empty public constructor
+    @ViewById(R.id.transactions_listview_transactsions)
+    ListView transactions;
+
+    @AfterViews
+    public void init() {
+        transactions.setAdapter(new TransactionsBaseAdapter(getView().getContext()));
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    @Click(R.id.transactions_button_new_transaction)
+    public void addTransactionClicked() {
+        getFragmentManager().beginTransaction().replace(
+                R.id.fragment_container,
+                new TransactionEditFragment_().builder().build(),
+                getActivity().getFragmentManager().findFragmentById(R.id.fragment_container).getTag() + "-Transaction_Edit_Fragment")
+                .commit();
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_transactions, container, false);
-
-        ListView transactions = (ListView) view.findViewById(R.id.transactions_listview_transactsions);
-        transactions.setAdapter(new TransactionsBaseAdapter(view.getContext()));
-
-        Button newTransaction = (Button) view.findViewById(R.id.transactions_button_new_transaction);
-        newTransaction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TransactionEditFragment transactionEditFragment = new TransactionEditFragment();
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, transactionEditFragment);
-                fragmentTransaction.commit();
-            }
-        });
-
-        return view;
-    }
 }

@@ -1,13 +1,10 @@
 package com.ultimatumedia.moneymanager.Objects.Wallets;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.ultimatumedia.moneymanager.DatabaseLayer.DatabaseLayer;
-import com.ultimatumedia.moneymanager.MoneyMath.MoneyMath;
 import com.ultimatumedia.moneymanager.Objects.WalletAbstract;
-import com.ultimatumedia.moneymanager.ObserverChildren.WalletManager;
-import com.ultimatumedia.moneymanager.ObserverPattern.Abstracts.Observer;
+import com.ultimatumedia.moneymanager.Subjects.WalletManagerSubject;
 import com.ultimatumedia.moneymanager.ObserverPattern.Abstracts.Subject;
 
 /**
@@ -20,15 +17,18 @@ public class NormalWallet extends WalletAbstract{
     }
 
     @Override
-    public void update() {
-        double incomingMoney = ((WalletManager) subject).getMoney(getName(), getPercent());
-        if (incomingMoney > 0) {
-            addIncome(incomingMoney);
-        } else {
-            addExpense(incomingMoney);
+    public void update(String state) {
+        if (state.equalsIgnoreCase("PERCENT_UPDATE")) {
+            double newPercent = ((WalletManagerSubject) subject).UpdatePercent(getPercent());
+            setPercent(newPercent, false);
+        } else if (state.equalsIgnoreCase("NEW_TRANSACTION")) {
+            double incomingMoney = ((WalletManagerSubject) subject).getMoney(getName(), getPercent());
+            if (incomingMoney > 0) {
+                addIncome(incomingMoney);
+            } else {
+                addExpense(incomingMoney);
+            }
+            DatabaseLayer.updateWallet(context, this);
         }
-
-        DatabaseLayer databaseLayer = new DatabaseLayer(context);
-        databaseLayer.updateWallet(this);
     }
 }

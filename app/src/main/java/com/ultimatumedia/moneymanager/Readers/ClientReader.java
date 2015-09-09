@@ -5,7 +5,7 @@ import android.content.Context;
 import com.ultimatumedia.moneymanager.DatabaseLayer.DatabaseLayer;
 import com.ultimatumedia.moneymanager.Objects.Transactions.Transaction;
 import com.ultimatumedia.moneymanager.Objects.Wallets.NormalWallet;
-import com.ultimatumedia.moneymanager.ObserverChildren.WalletManager;
+import com.ultimatumedia.moneymanager.Subjects.WalletManagerSubject;
 import com.ultimatumedia.moneymanager.R;
 
 import java.io.InputStream;
@@ -19,7 +19,7 @@ public class ClientReader {
 
     }
 
-    public void LoadAllTransactionFromCSV(Context context, DatabaseLayer databaseLayer) {
+    public void LoadAllTransactionFromCSV(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.inittransactionlist);
         CSVReader csvReader = new CSVReader(inputStream);
         List<String[]> transactionStringList = csvReader.readCSVFile(context);
@@ -30,20 +30,20 @@ public class ClientReader {
             transaction.amount = Double.parseDouble(tran[2]);
             transaction.walletName = tran[3];
             transaction.note = tran[4];
-            databaseLayer.addNewTransaction(transaction);
+            DatabaseLayer.addNewTransaction(context, transaction);
         }
     }
 
-    public void LoadAllWalletsFromCSV(Context context, DatabaseLayer databaseLayer) {
+    public void LoadAllWalletsFromCSV(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.initwalletlist);
         CSVReader csvReader = new CSVReader(inputStream);
         List<String[]> wallets = csvReader.readCSVFile(context);
         for(String[] sWallet : wallets) {
-            NormalWallet normalWallet = new NormalWallet(context, WalletManager.getInstance(context));
+            NormalWallet normalWallet = new NormalWallet(context, WalletManagerSubject.getInstance(context));
             normalWallet.setName(sWallet[0]);
             normalWallet.setPercent(Double.parseDouble(sWallet[1]), true);
             normalWallet.setSubscribe(true);
-            databaseLayer.addWallet(normalWallet);
+            DatabaseLayer.addWallet(context, normalWallet);
         }
     }
 }

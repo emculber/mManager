@@ -24,9 +24,7 @@ public class TransactionsBaseAdapter extends BaseAdapter {
 
     public TransactionsBaseAdapter(Context context) {
         this.context = context;
-        DatabaseLayer databaseLayer = new DatabaseLayer(context);
-
-        transactions = databaseLayer.getTransactionList();
+        transactions = DatabaseLayer.getTransactionList(context);
     }
 
     @Override

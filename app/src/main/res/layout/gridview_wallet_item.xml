@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/defaultbackground">
+    android:background="@drawable/boarder_list_view">
 
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Wallet Name"
         android:id="@+id/gridview_wallet_item_name"
         android:layout_gravity="center_horizontal"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_weight="1"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -21,62 +27,65 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Wallet Percent"
         android:id="@+id/gridview_wallet_item_percent"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/gridview_wallet_item_name"
-        android:layout_toEndOf="@+id/gridview_wallet_item_name" />
+        android:layout_weight="1" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="$200.00"
-        android:id="@+id/gridview_wallet_item_current_amount"
-        android:layout_alignTop="@+id/textView2"
-        android:layout_toRightOf="@+id/textView2"
-        android:layout_toEndOf="@+id/textView2" />
+        android:layout_weight="1">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="$300.00"
-        android:id="@+id/gridview_wallet_item_income"
-        android:textAlignment="center"
-        android:textColor="@color/darkgreen"
-        android:layout_below="@+id/gridview_wallet_item_name"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="$300.00"
+            android:id="@+id/gridview_wallet_item_income"
+            android:textColor="@color/darkgreen"
+            android:layout_weight="1"
+            android:gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="-$100.00"
-        android:id="@+id/gridview_wallet_item_expense"
-        android:textAlignment="center"
-        android:textColor="@color/darkred"
-        android:layout_below="@+id/gridview_wallet_item_name"
-        android:layout_toRightOf="@+id/textView"
-        android:layout_toEndOf="@+id/textView" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="+"
+            android:id="@+id/textView"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            android:gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="+"
-        android:id="@+id/textView"
-        android:layout_below="@+id/gridview_wallet_item_name"
-        android:layout_toRightOf="@+id/gridview_wallet_item_income"
-        android:layout_toEndOf="@+id/gridview_wallet_item_income" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="-$100.00"
+            android:id="@+id/gridview_wallet_item_expense"
+            android:textColor="@color/darkred"
+            android:layout_weight="1"
+            android:gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="="
-        android:id="@+id/textView2"
-        android:layout_alignTop="@+id/textView"
-        android:layout_toRightOf="@+id/gridview_wallet_item_expense"
-        android:layout_toEndOf="@+id/gridview_wallet_item_expense" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="="
+            android:id="@+id/textView2"
+            android:layout_weight="1"
+            android:gravity="center_horizontal" />
 
-</RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="$200.00"
+            android:id="@+id/gridview_wallet_item_current_amount"
+            android:layout_weight="1"
+            android:gravity="center_horizontal" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

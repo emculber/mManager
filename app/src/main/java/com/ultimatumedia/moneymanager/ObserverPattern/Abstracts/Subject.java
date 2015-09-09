@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by Erik on 7/6/15.
  */
 public abstract class Subject {
-    private ArrayList<Observer> observers = new ArrayList<Observer>();
+    protected ArrayList<Observer> observers = new ArrayList<Observer>();
     private State state;
 
     public enum State {
@@ -33,7 +33,7 @@ public abstract class Subject {
 
     public void notifyAllObservers(){
         for (Observer observer : observers) {
-            observer.update();
+            observer.update(state.toString());
         }
     }
 }

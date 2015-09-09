@@ -1,93 +1,86 @@
 package com.ultimatumedia.moneymanager.Fragments;
 
-import android.app.FragmentTransaction;
-import android.graphics.Color;
-import android.os.Bundle;
 import android.app.Fragment;
-import android.view.LayoutInflater;
+import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 
 import com.ultimatumedia.moneymanager.Adapters.WalletsBaseAdapter;
 import com.ultimatumedia.moneymanager.DatabaseLayer.DatabaseLayer;
+import com.ultimatumedia.moneymanager.MoneyMath.LargeSumConverter;
 import com.ultimatumedia.moneymanager.MoneyMath.MoneyMath;
 import com.ultimatumedia.moneymanager.R;
 import com.ultimatumedia.moneymanager.UIComponents.CircleEqualityProgress;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.ViewById;
+
+@EFragment(R.layout.fragment_wallets)
 public class WalletsFragment extends Fragment {
 
-    public WalletsFragment() {
+    @ViewById(R.id.wallet_equality_progress)
+    public CircleEqualityProgress circleEqualityProgress;
+    @ViewById(R.id.wallets_textview_expense)
+    public TextView expenseTextView;
+    @ViewById(R.id.wallets_textview_income)
+    public TextView incomeTextView;
+    @ViewById(R.id.wallets_gridview_wallets)
+    public GridView wallets;
+
+    private double income;
+    private double expense;
+    private double total;
+
+    @AfterViews
+    public void init() {
+        Context context = getView().getContext();
+
+        income = DatabaseLayer.getTotalTransactionIncome(context);
+        expense = DatabaseLayer.getTotalTransactionExpense(context);
+        total = MoneyMath.addMoney(income, expense);
+
+        initEqualityProgress();
+        initTextViews();
+        initWalletsGridview(context);
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    private void initEqualityProgress() {
+        float incomeAngle = (float) ((income / MoneyMath.subtractMoney(income, expense)) * 360.0);
+        circleEqualityProgress.updateView(LargeSumConverter.AutoConvert(total), incomeAngle, income, MoneyMath.subtractMoney(income, expense));
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_wallets, container, false);
-
-        CircleEqualityProgress circleEqualityProgress = (CircleEqualityProgress)view.findViewById(R.id.equality_progress);
-        //circleEqualityProgress.runingMethod();
-
-        DatabaseLayer databaseLayer = new DatabaseLayer(view.getContext());
-
-
-        TextView expenseTextView = (TextView) view.findViewById(R.id.wallets_textview_expense);
-        TextView incomeTextView = (TextView) view.findViewById(R.id.wallets_textview_income);
-        TextView currentAmountTextView = (TextView) view.findViewById(R.id.wallets_textview_current_amount);
-
-        double income = databaseLayer.getTotalTransactionIncome();
-        double expense = databaseLayer.getTotalTransactionExpense();
-        MoneyMath moneyMath = new MoneyMath();
-        double total = moneyMath.addMoney(income, expense);
-
-        float incomeAngle = (float)((income/moneyMath.subtractMoney(income, expense))*360.0);
-        circleEqualityProgress.updateView(Double.toString(total), incomeAngle);
-
-        expenseTextView.setText(Double.toString(expense));
-        incomeTextView.setText(Double.toString(income));
-        currentAmountTextView.setText(Double.toString(total));
-
+    private void initTextViews() {
+        expenseTextView.setText(LargeSumConverter.AutoConvert(expense));
         expenseTextView.setTextColor(getResources().getColor(R.color.darkred));
+
+        incomeTextView.setText(LargeSumConverter.AutoConvert(income));
         incomeTextView.setTextColor(getResources().getColor(R.color.darkgreen));
+    }
 
-        if((total) < 0)
-            currentAmountTextView.setTextColor(getResources().getColor(R.color.darkred));
-        else
-            currentAmountTextView.setTextColor(getResources().getColor(R.color.darkgreen));
-
-        GridView wallets = (GridView) view.findViewById(R.id.wallets_gridview_wallets);
-        wallets.setAdapter(new WalletsBaseAdapter(view.getContext()));
-        wallets.setBackgroundColor(Color.LTGRAY);
+    private void initWalletsGridview(Context context) {
+        wallets.setAdapter(new WalletsBaseAdapter(context));
         wallets.setVerticalSpacing(4);
         wallets.setHorizontalSpacing(4);
+    }
 
-        Button transactionList = (Button) view.findViewById(R.id.wallets_button_transaction);
-        transactionList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TransactionsFragment transactionsFragment = new TransactionsFragment();
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, transactionsFragment);
-                fragmentTransaction.commit();
-            }
-        });
-        Button newWallet = (Button) view.findViewById(R.id.wallets_button_wallet);
-        newWallet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                WalletEditFragment walletEditFragment = new WalletEditFragment();
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, walletEditFragment);
-                fragmentTransaction.commit();
-            }
-        });
+    @Click(R.id.wallets_button_transaction)
+    public void transactionListClicked() {
+        getFragmentManager().beginTransaction().replace(
+                R.id.fragment_container,
+                new TransactionsFragment_().builder().build(),
+                getActivity().getFragmentManager().findFragmentById(R.id.fragment_container).getTag() + "-Transactions_Fragment")
+                .commit();
+    }
 
-        return view;
+    @Click(R.id.wallets_button_wallet)
+    public void NewWalletClicked() {
+        getFragmentManager().beginTransaction().replace(
+                R.id.fragment_container,
+                new WalletEditFragment_().builder().build(),
+                getActivity().getFragmentManager().findFragmentById(R.id.fragment_container).getTag() + "-Wallet_Edit_Fragment")
+                .commit();
     }
 }

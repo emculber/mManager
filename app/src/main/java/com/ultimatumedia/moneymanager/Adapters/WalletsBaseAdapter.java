@@ -24,8 +24,7 @@ public class WalletsBaseAdapter extends BaseAdapter {
 
     public WalletsBaseAdapter(Context context) {
         this.context = context;
-        DatabaseLayer databaseLayer = new DatabaseLayer(context);
-        walletAbstracts = databaseLayer.getWallets();
+        walletAbstracts = DatabaseLayer.getWallets(context);
         walletAbstracts.remove(0);
         walletAbstracts.add(UnallocatedWallet.getInstance());
     }

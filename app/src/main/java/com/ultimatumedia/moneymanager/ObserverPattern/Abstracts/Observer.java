@@ -5,5 +5,5 @@ package com.ultimatumedia.moneymanager.ObserverPattern.Abstracts;
  */
 public abstract class Observer {
     protected Subject subject;
-    public abstract void update();
+    public abstract void update(String state );
 }
